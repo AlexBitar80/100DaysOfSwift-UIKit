@@ -14,6 +14,10 @@ class ViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Visualizar imagens"
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
         let items = try! fm.contentsOfDirectory(atPath: path)
@@ -23,6 +27,7 @@ class ViewController: UITableViewController {
                 pictures.append(item)
             }
         }
+        pictures.sort()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -33,5 +38,15 @@ class ViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.textLabel?.text = pictures[indexPath.row]
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let vc = storyboard?.instantiateViewController(withIdentifier: "Detail") as? DetailViewController {
+            vc.selectedImage = pictures[indexPath.row]
+            vc.totalPicture = pictures.count
+            vc.selectedPictureNumber = indexPath.row + 1
+            
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
